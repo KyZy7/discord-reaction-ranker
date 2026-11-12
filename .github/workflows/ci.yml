@@ -1,0 +1,120 @@
+name: Checks, package, and release
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+
+  browsers:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [edge, chrome]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - name: Select Chrome
+        if: matrix.browser == 'chrome'
+        shell: pwsh
+        run: |
+          $chromePath = Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'
+          if (-not (Test-Path -LiteralPath $chromePath)) { throw 'Chrome is missing on the runner' }
+          "BROWSER_PATH=$chromePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Verify source extension
+        run: npm run test:browser
+      - run: npm run package
+      - name: Verify extracted installation ZIP
+        shell: pwsh
+        run: |
+          $archive = Get-ChildItem -LiteralPath dist -Filter '*.zip'
+          Expand-Archive -LiteralPath $archive.FullName -DestinationPath artifacts/unpacked
+          $env:EXTENSION_PATH = (Resolve-Path -LiteralPath artifacts/unpacked).Path
+          npm run test:browser
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  package:
+    needs: [checks, browsers]
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_id: ${{ steps.package_artifact.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - run: npm run check
+      - run: npm run package
+      - uses: actions/upload-artifact@v7
+        id: package_artifact
+        with:
+          name: discord-reaction-ranker-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+  release:
+    needs: [package]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.package.outputs.artifact_id }}
+          path: dist
+      - name: Publish tagged GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release.cjs

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Discord Reaction Ranker — synthetic demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; background:#111522; color:#eff3fc; font:16px/1.5 system-ui,sans-serif; }
+    main { width: min(720px, calc(100vw - 480px)); padding:32px 42px 24px; }
+    .eyebrow { color:#9faef6; font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; }
+    h1 { font-size:38px; line-height:1.15; letter-spacing:-1px; margin:12px 0 16px; }
+    .intro { color:#bac4db; max-width:550px; margin-bottom:24px; }
+    nav { padding:12px 16px; background:#222a40; border:1px solid #3f4d71; border-radius:10px; margin-bottom:16px; }
+    nav a { color:#e0e6ff; text-decoration:none; display:flex; justify-content:space-between; }
+    .unreadBadge { color:#a3e6d5; font-size:12px; }
+    .card { padding:16px 20px; margin:12px 0; background:#1a2031; border:1px solid #303a51; border-radius:12px; }
+    .card h2 { margin:0; font-size:17px; } .card p { color:#aebbd2; font-size:13px; margin:8px 0; }
+    .reactions { color:#bfd2fb; font-size:13px; }
+    .note { color:#a3e6d5; font-size:12px; margin-top:22px; }
+    @media (max-width:700px) { main { width:100%;padding:18px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Discord Reaction Ranker · Demo</div>
+    <h1>Find the posts<br>your community loves.</h1>
+    <p class="intro">Browse your forum as usual. Collected posts appear in the rankings, sorted by reactions on their opening message.</p>
+    <nav aria-label="Channels">
+      <a id="forum-link" data-list-item-id="channels___800000000000000002" href="/channels/800000000000000001/800000000000000002">
+        <div class="name__fixture">demo-projects <img alt="📁" width="20" height="20" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Ctext y='16' font-size='16'%3E%F0%9F%93%81%3C/text%3E%3C/svg%3E"></div>
+        <span class="unreadBadge">24 NEW</span>
+      </a>
+    </nav>
+    <div class="card"><h2>Community garden mod</h2><p>An imaginary community project, shared by Demo Builder 1.</p><span class="reactions">⭐ 294 &nbsp; 🔥 126</span></div>
+    <div class="card"><h2>Night sky texture pack</h2><p>A fictional night-sky design with hand-painted stars.</p><span class="reactions">⭐ 286 &nbsp; 🔥 123</span></div>
+    <div class="card"><h2>Accessible color theme</h2><p>A sample project with a high-contrast color palette.</p><span class="reactions">⭐ 278 &nbsp; 🔥 120</span></div>
+    <p class="note">Synthetic demonstration only. These are invented posts and accounts.<br>This backdrop is not Discord's interface. Rankings use the actual extension.</p>
+  </main>
+</body>
+</html>

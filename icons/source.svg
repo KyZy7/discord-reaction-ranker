@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <title>Reaction ranking: descending bars and arrow</title>
+  <rect x="16" y="16" width="96" height="96" rx="12" fill="#454fb0"/>
+  <path d="M32 35h43v9H32zm0 22h31v9H32zm0 22h19v9H32z" fill="#f4f7ff"/>
+  <path d="M88 35h8v40h7L92 91 81 75h7z" fill="#97e8d5"/>
+</svg>

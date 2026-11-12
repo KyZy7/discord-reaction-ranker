@@ -1,0 +1,10 @@
+name: Feature request
+description: Suggest an improvement.
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would you like to do?
+      description: Explain the use case and desired behavior without private server data.
+    validations:
+      required: true

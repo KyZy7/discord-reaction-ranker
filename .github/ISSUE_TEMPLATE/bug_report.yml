@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible extension problem using synthetic examples.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not attach credentials, copied authenticated requests, HAR files, private server captures, or personal information. Redact screenshots."
+  - type: input
+    id: versions
+    attributes:
+      label: Browser, operating system, and extension version
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Describe expected and actual behavior. Use invented examples.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Checks already tried
+      description: For example, reload extension and Discord tab, browse another forum, inspect extension errors without sharing credentials.
